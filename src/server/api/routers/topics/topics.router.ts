@@ -126,10 +126,15 @@ export const topicsRouter = createTRPCRouter({
           date: true,
           isActive: true,
           posts: {
+            include: {
+              _count: {
+                select: {
+                  votes: true,
+                },
+              },
+            },
             select: {
               id: true,
-              upvotes: true,
-              downvotes: true,
               totalViews: true,
               aiProcessed: true,
               validationStatus: true,
@@ -145,14 +150,14 @@ export const topicsRouter = createTRPCRouter({
       const stats = {
         totalPosts: topic.posts.length,
         totalVotes: topic.posts.reduce(
-          (sum, post) => sum + post.upvotes + post.downvotes,
+          (sum, post) => sum + post._count.votes,
           0,
         ),
         totalViews: topic.posts.reduce((sum, post) => sum + post.totalViews, 0),
         aiProcessedPosts: topic.posts.filter((post) => post.aiProcessed).length,
         averageUpvotes:
           topic.posts.length > 0
-            ? topic.posts.reduce((sum, post) => sum + post.upvotes, 0) /
+            ? topic.posts.reduce((sum, post) => sum + post._count.votes, 0) /
               topic.posts.length
             : 0,
         participationRate: 0, // This would need user count to calculate properly

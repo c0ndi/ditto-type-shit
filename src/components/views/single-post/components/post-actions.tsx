@@ -1,18 +1,15 @@
 import { usePostVoting } from "@/hooks";
-import { usePost } from "@/components/providers";
 import { Button } from "@/components/ui/button";
 import { CardContent } from "@/components/ui/card";
 import { ThumbsUp, ThumbsDown, MessageCircle, Heart } from "lucide-react";
+import type { Post } from "../types";
 
 type Props = {
-  postId: string;
+  post: Post;
 }
 
-export function PostActions({ postId }: Props) {
-  const { userVote, isVoting, upvote, downvote } = usePostVoting({ postId });
-  const { post } = usePost();
-
-  if (!post) return null;
+export function PostActions({ post }: Props) {
+  const { userVote, isVoting, upvote, downvote } = usePostVoting({ postId: post.id });
 
   const netVotes = post.upvotes - post.downvotes;
 

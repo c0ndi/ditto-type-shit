@@ -152,11 +152,16 @@ export const userRouter = createTRPCRouter({
       include: {
         stats: true,
         posts: {
+          include: {
+            _count: {
+              select: {
+                votes: true,
+              },
+            },
+          },
           select: {
             id: true,
             createdAt: true,
-            upvotes: true,
-            downvotes: true,
             topic: {
               select: {
                 title: true,
@@ -189,14 +194,14 @@ export const userRouter = createTRPCRouter({
 
     const averageUpvotes =
       recentPosts.length > 0
-        ? recentPosts.reduce((sum, post) => sum + post.upvotes, 0) /
+        ? recentPosts.reduce((sum, post) => sum + post._count.votes, 0) /
           recentPosts.length
         : 0;
 
     const bestPost =
       user.posts.length > 0
         ? user.posts.reduce((best, current) =>
-            current.upvotes > best.upvotes ? current : best,
+            current._count.votes > best._count.votes ? current : best,
           )
         : null;
 

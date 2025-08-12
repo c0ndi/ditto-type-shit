@@ -56,6 +56,7 @@ export const authConfig = {
     async session({ session, token }) {
       session.user = token.data as {
         name: string;
+        twitterId: string;
         id: string;
         profile_image_url: string;
         username: string;

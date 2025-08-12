@@ -1,13 +1,15 @@
-import { usePost } from "@/components/providers";
+
 import { CardHeader } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { formatDistanceToNow } from "date-fns";
+import type { Post } from "../types";
 
-export function PostHeader() {
-  const { post } = usePost();
+type Props = {
+  post: Post;
+}
 
-  if (!post) return null;
+export function PostHeader({ post }: Props) {
 
   return (
     <CardHeader className="pb-3">

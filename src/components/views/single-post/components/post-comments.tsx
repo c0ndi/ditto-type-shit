@@ -6,9 +6,13 @@ import { Button } from "@/components/ui/button";
 import { Loader2, Send } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatDistanceToNow } from "date-fns";
+import type { Post } from "../types";
 
-// Comments section
-export function PostComments({ postId }: { postId: string }) {
+type Props = {
+  post: Post;
+}
+
+export function PostComments({ post }: Props) {
   const [newComment, setNewComment] = useState("");
   const {
     comments,
@@ -18,7 +22,7 @@ export function PostComments({ postId }: { postId: string }) {
     loadMoreComments,
     hasMoreComments,
     isLoadingMore,
-  } = usePostComments({ postId });
+  } = usePostComments({ postId: post.id });
 
   const handleSubmitComment = async () => {
     if (!newComment.trim()) return;

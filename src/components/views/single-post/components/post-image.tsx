@@ -1,10 +1,11 @@
 import Image from "next/image";
-import { usePost } from "@/components/providers";
+import type { Post } from "../types";
 
-export function PostImage() {
-  const { post } = usePost();
+type Props = {
+  post: Post;
+}
 
-  if (!post) return null;
+export function PostImage({ post }: Props) {
 
   return (
     <div className="relative aspect-square">
