@@ -126,4 +126,73 @@ This file documents all changes made to the Ditto2 Daily Photo Challenge applica
 - Created clear database functionality to remove all data except current user for clean testing - 12/08/2025 16:55
 - Added detailed statistics display showing exactly what data gets created during seeding - 12/08/2025 16:55
 
+### Post Feed System
+
+- Created server-side query function (`getTodaysPosts`) for fetching today's posts with full user and engagement data - 12/08/2025 17:00
+- Built PostCard component with user avatars, engagement metrics, and reputation indicators - 12/08/2025 17:00
+- Added PostFeed component displaying posts in responsive grid layout sorted by creation date - 12/08/2025 17:00
+- Integrated feed into homepage below create post form for seamless user experience - 12/08/2025 17:00
+- Added engagement indicators (votes, comments, rewards) and user reputation display - 12/08/2025 17:00
+- Created responsive design supporting mobile, tablet, and desktop layouts - 12/08/2025 17:00
+- Added "Hot" and "Popular" badges for high-engagement posts - 12/08/2025 17:00
+- Implemented empty state when no posts exist for today's challenge - 12/08/2025 17:00
+- Enhanced homepage layout with wider container to accommodate grid layout - 12/08/2025 17:00
+
+### tRPC Architecture Improvement
+
+- Refactored server components to use tRPC procedures instead of direct database calls - 12/08/2025 17:05
+- Updated CreatePostForm to use `api.post.getActiveTopicWithPostStatus()` tRPC procedure - 12/08/2025 17:05
+- Updated PostFeed to use `api.post.getTodaysPosts()` tRPC procedure - 12/08/2025 17:05
+- Maintained proper separation between server-side tRPC calls and client-side queries - 12/08/2025 17:05
+- Ensured all data fetching goes through tRPC layer for consistency and type safety - 12/08/2025 17:05
+
+### Post Interaction System
+
+- Created comprehensive tRPC queries for post interactions (voting, commenting, detailed fetching) - 12/08/2025 17:08
+- Added PostProvider with React Context for centralized post state management - 12/08/2025 17:08
+- Implemented optimistic updates for voting with automatic rollback on errors - 12/08/2025 17:08
+- Created usePostVoting hook with upvote/downvote functionality and self-vote prevention - 12/08/2025 17:08
+- Built usePostComments hook with infinite pagination and optimistic comment creation - 12/08/2025 17:08
+- Added usePostDetails hook for fetching individual post data with caching - 12/08/2025 17:08
+- Implemented dual-query system: fast post loading + parallel comments loading for better UX - 12/08/2025 17:08
+- Created PostDetail demo component showcasing complete interaction functionality - 12/08/2025 17:08
+- Added proper error handling and loading states throughout the interaction system - 12/08/2025 17:08
+- Designed system to prevent UI blocking when comments are loading - 12/08/2025 17:08
+
+### PostProvider Architecture Improvement
+
+- Refactored PostProvider to use custom hooks instead of duplicating tRPC logic - 12/08/2025 17:10
+- PostProvider now properly composes usePostDetails, usePostVoting, and usePostComments hooks - 12/08/2025 17:10
+- Eliminated code duplication between provider and individual hooks - 12/08/2025 17:10
+- Simplified PostProvider interface by removing initial data requirements - 12/08/2025 17:10
+- Better separation of concerns: hooks handle tRPC logic, provider handles composition - 12/08/2025 17:10
+
+### Fixed Vote Count Optimistic Updates
+
+- Fixed issue where vote counts weren't updating immediately when clicking upvote/downvote - 12/08/2025 17:15
+- Added optimistic updates to post vote counts in usePostVoting hook - 12/08/2025 17:15
+- Vote changes now update both individual post data and post feed data immediately - 12/08/2025 17:15
+- Created PostCardWithVoting component that includes interactive voting buttons - 12/08/2025 17:15
+- Updated PostFeed to use interactive post cards instead of static ones - 12/08/2025 17:15
+- Added comprehensive error handling to revert optimistic updates if voting fails - 12/08/2025 17:15
+- Vote counts now show real-time changes while maintaining data consistency - 12/08/2025 17:15
+
+### Removed Redundant Vote Count Fields (Architecture Improvement)
+
+- Removed redundant `upvotes` and `downvotes` fields from Post model schema - 12/08/2025 17:25
+- Vote counts now calculated dynamically from Vote table relations - 12/08/2025 17:25
+- Eliminates data consistency issues between vote records and cached counts - 12/08/2025 17:25
+- Simplified votePost mutation to only manage Vote records - 12/08/2025 17:25
+- Updated getTodaysPosts and getById queries to calculate vote counts on-the-fly - 12/08/2025 17:25
+- Single source of truth: all vote data now comes from Vote table only - 12/08/2025 17:25
+- Database migration completed to remove deprecated vote count columns - 12/08/2025 17:25
+
+### Fixed Optimistic Updates in Post Feed
+
+- Fixed PostCardContent to read live data from tRPC cache instead of static props - 12/08/2025 17:35
+- Optimistic vote updates now work correctly in the main post feed on homepage - 12/08/2025 17:35
+- Vote counts update instantly when clicking upvote/downvote buttons in feed - 12/08/2025 17:35
+- Component now uses getTodaysPosts query data to reflect real-time cache changes - 12/08/2025 17:35
+- Maintains fallback to original prop data for reliability - 12/08/2025 17:35
+
 ---

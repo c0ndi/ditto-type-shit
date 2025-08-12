@@ -14,4 +14,29 @@ const getPostsSchema = z.object({
   cursor: z.string().cuid().optional(),
 });
 
-export { createPostSchema, getPostsSchema };
+const votePostSchema = z.object({
+  postId: z.string().cuid(),
+  type: z.enum(["UPVOTE", "DOWNVOTE"]),
+});
+
+const createCommentSchema = z.object({
+  postId: z.string().cuid(),
+  content: z
+    .string()
+    .min(1, "Comment cannot be empty")
+    .max(500, "Comment too long"),
+});
+
+const getCommentsSchema = z.object({
+  postId: z.string().cuid(),
+  limit: z.number().min(1).max(50).default(20),
+  cursor: z.string().cuid().optional(),
+});
+
+export {
+  createPostSchema,
+  getPostsSchema,
+  votePostSchema,
+  createCommentSchema,
+  getCommentsSchema,
+};

@@ -3,7 +3,7 @@
  * Purpose: API endpoint for manually triggering topic generation during development
  */
 
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
   try {
@@ -21,7 +21,10 @@ export async function POST(request: NextRequest) {
       method: "POST",
     });
 
-    const result = await cronResponse.json();
+    const result = (await cronResponse.json()) as {
+      success: boolean;
+      message: string;
+    };
 
     return NextResponse.json({
       success: true,

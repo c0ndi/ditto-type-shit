@@ -362,8 +362,13 @@ export async function seedDatabase() {
             aiKeywordsFound: randomChoices(topic.keywords, randomInt(1, 3)),
             aiProcessed: true,
             validationStatus: randomChoice(validationStatuses),
-            upvotes: randomInt(0, 50),
-            downvotes: randomInt(0, 10),
+            votes: {
+              create: {
+                userId: user.id,
+                type: randomChoice(["UPVOTE", "DOWNVOTE"]),
+                createdAt: randomRecentDate(5),
+              },
+            },
             totalViews: randomInt(20, 200),
             sentiment: randomFloat(-0.3, 1.0),
             rewardPoints: randomInt(10, 100),

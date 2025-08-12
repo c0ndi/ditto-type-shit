@@ -1,10 +1,9 @@
 /**
- * Create Post Form - Refactored on 12/08/2025 16:52
- * Server component that handles post status checking without client-side loading states
+ * Create Post Form - Updated on 12/08/2025 17:05
+ * Server component that uses tRPC procedure for post status checking
  */
 
-import { auth } from "@/server/auth/config";
-import { getActiveTopicWithPostStatus } from "@/server/api/routers/posts/server-queries";
+import { api } from "@/trpc/server";
 
 // Import sub-components
 import { TopicInfo } from "./components/topic-info";
@@ -16,8 +15,7 @@ interface CreatePostFormProps {
 }
 
 export async function CreatePostForm({ className }: CreatePostFormProps) {
-  const session = await auth();
-  const { topic, hasPosted } = await getActiveTopicWithPostStatus(session);
+  const { topic, hasPosted } = await api.post.getActiveTopicWithPostStatus();
 
   // If user has already posted today
   if (hasPosted) {

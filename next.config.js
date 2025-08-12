@@ -12,6 +12,12 @@ const config = {
         protocol: "https",
         hostname: "fhsopfmmkviirhdchzzv.supabase.co",
       },
+
+      // Placeholder
+      {
+        protocol: "https",
+        hostname: "picsum.photos",
+      },
     ],
   },
 };

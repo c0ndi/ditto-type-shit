@@ -9,9 +9,15 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "@/server/api/trpc";
-import { uploadPostImage, deletePostImage } from "@/lib/supabase";
+import { uploadPostImage } from "@/lib/supabase";
 import { TRPCError } from "@trpc/server";
-import { createPostSchema, getPostsSchema } from "./schemas";
+import {
+  createPostSchema,
+  getPostsSchema,
+  votePostSchema,
+  createCommentSchema,
+  getCommentsSchema,
+} from "./schemas";
 
 export const postsRouter = createTRPCRouter({
   /**
@@ -273,5 +279,359 @@ export const postsRouter = createTRPCRouter({
         posts,
         nextCursor,
       };
+    }),
+
+  /**
+   * Get today's posts for the active topic
+   */
+  getTodaysPosts: publicProcedure.query(async ({ ctx }) => {
+    // Get the active topic
+    const activeTopic = await ctx.db.topic.findFirst({
+      where: { isActive: true },
+      orderBy: { createdAt: "desc" },
+    });
+
+    if (!activeTopic) {
+      return [];
+    }
+
+    // Get posts for today's topic, sorted by creation date (newest first)
+    const posts = await ctx.db.post.findMany({
+      where: {
+        topicId: activeTopic.id,
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            twitterUsername: true,
+            twitterDisplayName: true,
+            twitterImage: true,
+            reputation: true,
+            totalRewards: true,
+          },
+        },
+        topic: {
+          select: {
+            id: true,
+            title: true,
+            description: true,
+          },
+        },
+        _count: {
+          select: {
+            votes: true,
+            comments: true,
+          },
+        },
+        votes: {
+          select: {
+            type: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: 50, // Limit to 50 posts for performance
+    });
+
+    // Calculate vote counts dynamically from votes
+    return posts.map((post) => {
+      const upvotes = post.votes.filter(
+        (vote) => vote.type === "UPVOTE",
+      ).length;
+      const downvotes = post.votes.filter(
+        (vote) => vote.type === "DOWNVOTE",
+      ).length;
+
+      return {
+        ...post,
+        upvotes,
+        downvotes,
+        votes: undefined, // Remove the votes array from the response
+      };
+    });
+  }),
+
+  /**
+   * Get active topic with user post status
+   */
+  getActiveTopicWithPostStatus: protectedProcedure.query(async ({ ctx }) => {
+    const activeTopic = await ctx.db.topic.findFirst({
+      where: { isActive: true },
+      orderBy: { createdAt: "desc" },
+    });
+
+    if (!activeTopic) {
+      return {
+        topic: null,
+        hasPosted: false,
+      };
+    }
+
+    const existingPost = await ctx.db.post.findUnique({
+      where: {
+        twitterId_topicId: {
+          twitterId: ctx.session.user.twitterId,
+          topicId: activeTopic.id,
+        },
+      },
+      select: { id: true },
+    });
+
+    return {
+      topic: activeTopic,
+      hasPosted: !!existingPost,
+    };
+  }),
+
+  /**
+   * Get post by ID with details
+   */
+  getById: publicProcedure
+    .input(z.object({ id: z.string().cuid() }))
+    .query(async ({ ctx, input }) => {
+      const post = await ctx.db.post.findUnique({
+        where: { id: input.id },
+        include: {
+          user: {
+            select: {
+              id: true,
+              twitterUsername: true,
+              twitterDisplayName: true,
+              twitterImage: true,
+              reputation: true,
+              totalRewards: true,
+            },
+          },
+          topic: {
+            select: {
+              id: true,
+              title: true,
+              description: true,
+            },
+          },
+          _count: {
+            select: {
+              votes: true,
+              comments: true,
+            },
+          },
+          votes: {
+            select: {
+              type: true,
+            },
+          },
+        },
+      });
+
+      if (!post) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Post not found",
+        });
+      }
+
+      // Calculate vote counts dynamically from votes
+      const upvotes = post.votes.filter(
+        (vote) => vote.type === "UPVOTE",
+      ).length;
+      const downvotes = post.votes.filter(
+        (vote) => vote.type === "DOWNVOTE",
+      ).length;
+
+      return {
+        ...post,
+        upvotes,
+        downvotes,
+        votes: undefined, // Remove the votes array from the response
+      };
+    }),
+
+  /**
+   * Get comments for a post
+   */
+  getComments: publicProcedure
+    .input(getCommentsSchema)
+    .query(async ({ ctx, input }) => {
+      const comments = await ctx.db.comment.findMany({
+        where: { postId: input.postId },
+        include: {
+          user: {
+            select: {
+              id: true,
+              twitterUsername: true,
+              twitterDisplayName: true,
+              twitterImage: true,
+              reputation: true,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+        take: input.limit + 1,
+        cursor: input.cursor ? { id: input.cursor } : undefined,
+      });
+
+      let nextCursor: typeof input.cursor | undefined = undefined;
+      if (comments.length > input.limit) {
+        const nextItem = comments.pop();
+        nextCursor = nextItem?.id;
+      }
+
+      return {
+        comments,
+        nextCursor,
+      };
+    }),
+
+  /**
+   * Create a comment
+   */
+  createComment: protectedProcedure
+    .input(createCommentSchema)
+    .mutation(async ({ ctx, input }) => {
+      const { twitterId } = ctx.session.user;
+
+      // Check if post exists
+      const post = await ctx.db.post.findUnique({
+        where: { id: input.postId },
+        select: { id: true },
+      });
+
+      if (!post) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Post not found",
+        });
+      }
+
+      // Get user ID
+      const user = await ctx.db.user.findUniqueOrThrow({
+        where: { twitterId },
+        select: { id: true },
+      });
+
+      const comment = await ctx.db.comment.create({
+        data: {
+          postId: input.postId,
+          userId: user.id,
+          content: input.content,
+        },
+        include: {
+          user: {
+            select: {
+              id: true,
+              twitterUsername: true,
+              twitterDisplayName: true,
+              twitterImage: true,
+              reputation: true,
+            },
+          },
+        },
+      });
+
+      return comment;
+    }),
+
+  /**
+   * Vote on a post
+   */
+  votePost: protectedProcedure
+    .input(votePostSchema)
+    .mutation(async ({ ctx, input }) => {
+      const { twitterId } = ctx.session.user;
+
+      // Get user ID
+      const user = await ctx.db.user.findUniqueOrThrow({
+        where: { twitterId },
+        select: { id: true },
+      });
+
+      // Check if post exists
+      const post = await ctx.db.post.findUnique({
+        where: { id: input.postId },
+        select: { id: true, twitterId: true },
+      });
+
+      if (!post) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Post not found",
+        });
+      }
+
+      // Prevent self-voting
+      if (post.twitterId === twitterId) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Cannot vote on your own post",
+        });
+      }
+
+      // Check if user already voted
+      const existingVote = await ctx.db.vote.findUnique({
+        where: {
+          userId_postId: {
+            userId: user.id,
+            postId: input.postId,
+          },
+        },
+      });
+
+      if (existingVote) {
+        // If same vote type, remove the vote
+        if (existingVote.type === input.type) {
+          await ctx.db.vote.delete({
+            where: { id: existingVote.id },
+          });
+          return { action: "removed", type: input.type };
+        } else {
+          // Update to new vote type
+          await ctx.db.vote.update({
+            where: { id: existingVote.id },
+            data: { type: input.type },
+          });
+          return { action: "updated", type: input.type };
+        }
+      } else {
+        // Create new vote
+        await ctx.db.vote.create({
+          data: {
+            userId: user.id,
+            postId: input.postId,
+            type: input.type,
+          },
+        });
+        return { action: "created", type: input.type };
+      }
+    }),
+
+  /**
+   * Get user's vote on a post
+   */
+  getUserVote: protectedProcedure
+    .input(z.object({ postId: z.string().cuid() }))
+    .query(async ({ ctx, input }) => {
+      const { twitterId } = ctx.session.user;
+
+      const user = await ctx.db.user.findUniqueOrThrow({
+        where: { twitterId },
+        select: { id: true },
+      });
+
+      const vote = await ctx.db.vote.findUnique({
+        where: {
+          userId_postId: {
+            userId: user.id,
+            postId: input.postId,
+          },
+        },
+        select: { type: true },
+      });
+
+      return vote?.type ?? null;
     }),
 });

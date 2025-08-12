@@ -1,6 +1,6 @@
 
 /**
- * Updated on: Refactored with server-side data prefetching and improved UX - 12/08/2025 16:52
+ * Updated on: Added post feed below create form to show today's submissions - 12/08/2025 17:00
  */
 
 import { auth } from "@/server/auth/config";
@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Camera, Users, Trophy } from "lucide-react";
 import { CreatePostForm } from "@/components/views/posts/create-post-form";
+import { PostFeed } from "@/components/views/posts/post-feed/post-feed";
 
 export default async function Home() {
   const session = await auth();
@@ -67,16 +68,23 @@ export default async function Home() {
 
   return (
     <div className="container mx-auto py-8">
-      <div className="max-w-2xl mx-auto space-y-8">
-        <div className="text-center space-y-4">
-          <h1 className="text-3xl font-bold">Welcome back!</h1>
-          <p className="text-muted-foreground">
-            Ready for today&apos;s photo challenge?
-          </p>
+      <div className="max-w-6xl mx-auto space-y-12">
+        {/* Header and Create Post Section */}
+        <div className="max-w-2xl mx-auto space-y-8">
+          <div className="text-center space-y-4">
+            <h1 className="text-3xl font-bold">Welcome back!</h1>
+            <p className="text-muted-foreground">
+              Ready for today&apos;s photo challenge?
+            </p>
+          </div>
+
+          <CreatePostForm />
         </div>
 
-        <CreatePostForm
-        />
+        {/* Feed Section */}
+        <div className="w-full">
+          <PostFeed />
+        </div>
       </div>
     </div>
   );

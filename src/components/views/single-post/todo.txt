@@ -1,0 +1,2 @@
+TODO:
+- Create light endpoint to get image and author, show it first and the fetch for more data
