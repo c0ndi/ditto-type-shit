@@ -49,7 +49,6 @@ export default async function Home() {
               </p>
             </div>
           </div>
-
           <div className="space-y-4">
             <Button asChild size="lg">
               <Link href="/api/auth/signin">
