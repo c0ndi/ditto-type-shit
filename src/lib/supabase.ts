@@ -26,7 +26,7 @@ export const supabaseAdmin = createClient(
 
 // Storage configuration
 export const STORAGE_CONFIG = {
-  BUCKET_NAME: "post-images",
+  BUCKET_NAME: "ditto-bucket",
   MAX_FILE_SIZE: 5 * 1024 * 1024, // 5MB
   ALLOWED_TYPES: ["image/jpeg", "image/png", "image/webp"],
   PHOTO_DIRECTORY: "posts", // Main directory for all post photos
@@ -38,7 +38,7 @@ export const STORAGE_CONFIG = {
  * This structure makes it easy to organize and change storage paths later
  */
 export function generatePostImagePath(
-  userId: string,
+  twitterId: string,
   fileName: string,
 ): string {
   const now = new Date();
@@ -51,7 +51,7 @@ export function generatePostImagePath(
   // Extract file extension
   const ext = fileName.split(".").pop()?.toLowerCase() ?? "jpg";
 
-  return `${STORAGE_CONFIG.PHOTO_DIRECTORY}/${year}/${month}/${day}/${userId}/${timestamp}-${randomId}.${ext}`;
+  return `${STORAGE_CONFIG.PHOTO_DIRECTORY}/${year}/${month}/${day}/${twitterId}/${timestamp}-${randomId}.${ext}`;
 }
 
 /**
@@ -60,7 +60,7 @@ export function generatePostImagePath(
  */
 export async function uploadPostImage(
   file: File,
-  userId: string,
+  twitterId: string,
 ): Promise<{
   path: string;
   publicUrl: string;
@@ -79,7 +79,7 @@ export async function uploadPostImage(
   }
 
   // Generate unique path
-  const storagePath = generatePostImagePath(userId, file.name);
+  const storagePath = generatePostImagePath(twitterId, file.name);
 
   // Upload to Supabase
   const { data, error } = await supabase.storage

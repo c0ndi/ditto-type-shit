@@ -1,13 +1,13 @@
 
 /**
- * Updated on: Added post creation form with image upload functionality - 12/08/2025 15:40
+ * Updated on: Refactored with server-side data prefetching and improved UX - 12/08/2025 16:52
  */
 
 import { auth } from "@/server/auth/config";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Camera, Users, Trophy } from "lucide-react";
-import { CreatePostForm } from "@/components/views/posts/create-post-form/create-post-form";
+import { CreatePostForm } from "@/components/views/posts/create-post-form";
 
 export default async function Home() {
   const session = await auth();

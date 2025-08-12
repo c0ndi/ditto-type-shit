@@ -1,9 +1,10 @@
-import { ProfileTESTView } from "@/components/views/profile/test-view/test-view";
+/**
+ * Updated on: Complete profile page with comprehensive user information - 12/08/2025 16:09
+ * Purpose: User profile dashboard with stats, posts, activity, and achievements
+ */
 
-export default function Page() {
-  return (
-    <div className="container mx-auto py-8">
-      <ProfileTESTView />
-    </div>
-  )
+import { ProfileView } from "@/components/views/profile/profile-view";
+
+export default function ProfilePage() {
+  return <ProfileView />;
 }

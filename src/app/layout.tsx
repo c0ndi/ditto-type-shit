@@ -1,5 +1,5 @@
 /**
- * Updated on: Added NextAuth SessionProvider - 12/08/2025 10:45
+ * Updated on: Added top navigation with user dropdown - 12/08/2025 16:48
  */
 import "@/styles/globals.css";
 
@@ -8,6 +8,7 @@ import { Geist } from "next/font/google";
 import { SessionProvider } from "next-auth/react";
 
 import { TRPCReactProvider } from "@/trpc/react";
+import { TopNavigation } from "@/components/views/navigation/top-navigation";
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -27,7 +28,12 @@ export default function RootLayout({
     <html lang="en" className={`${geist.variable}`}>
       <body>
         <SessionProvider>
-          <TRPCReactProvider>{children}</TRPCReactProvider>
+          <TRPCReactProvider>
+            <TopNavigation />
+            <main className="min-h-screen">
+              {children}
+            </main>
+          </TRPCReactProvider>
         </SessionProvider>
       </body>
     </html>

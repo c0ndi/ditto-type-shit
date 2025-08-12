@@ -214,6 +214,10 @@ Upload → Supabase Storage → AI Analysis (background) → Database Update
 
 **Remember**: Every feature should enhance the core experience of daily creative challenges with fair, transparent rewards based on community engagement and content quality.
 
+## Intalling
+
+- When installing components from shadcn dont bother about asking, just install it. Same for the popular packages, always check if the package is popular on npm and if yes install without asking.
+
 ## SETTINGS FOR FILE CREATION
 
 - Each component, util, hook, provider (and everything) change should be listed in the CHANGE_LOG.md in the root directory named with kebab-case

@@ -6,7 +6,7 @@ declare module "next-auth" {
   interface Session {
     user: {
       name: string;
-      id: string;
+      twitterId: string;
       profile_image_url: string;
       username: string;
     };
@@ -63,7 +63,16 @@ export const authConfig = {
         emailVerified: Date | null;
       };
 
-      return session;
+      return {
+        ...session,
+        user: {
+          twitterId: session.user.id,
+          profile_image_url: session.user.profile_image_url,
+          username: session.user.username,
+          email: session.user.email,
+          emailVerified: session.user.emailVerified,
+        },
+      };
     },
   },
   pages: {

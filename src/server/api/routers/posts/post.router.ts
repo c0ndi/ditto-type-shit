@@ -11,36 +11,29 @@ import {
 } from "@/server/api/trpc";
 import { uploadPostImage, deletePostImage } from "@/lib/supabase";
 import { TRPCError } from "@trpc/server";
+import { createPostSchema, getPostsSchema } from "./schemas";
 
-// Validation schemas
-const createPostSchema = z.object({
-  topicId: z.string().cuid(),
-  imageBase64: z.string().min(1, "Image is required"),
-  imageType: z.string().regex(/^image\/(jpeg|png|webp)$/, "Invalid image type"),
-  fileName: z.string().min(1, "File name is required"),
-});
-
-const getPostsSchema = z.object({
-  topicId: z.string().cuid().optional(),
-  limit: z.number().min(1).max(50).default(20),
-  cursor: z.string().cuid().optional(),
-});
-
-export const postRouter = createTRPCRouter({
+export const postsRouter = createTRPCRouter({
   /**
    * Create a new post with image upload
    */
   create: protectedProcedure
     .input(createPostSchema)
     .mutation(async ({ ctx, input }) => {
-      const { user } = ctx.session;
+      const { twitterId } = ctx.session.user;
+
+      const user = await ctx.db.user.findUniqueOrThrow({
+        where: {
+          twitterId,
+        },
+      });
 
       try {
         // Check if user already posted for this topic
         const existingPost = await ctx.db.post.findUnique({
           where: {
-            userId_topicId: {
-              userId: user.id,
+            twitterId_topicId: {
+              twitterId: user.twitterId,
               topicId: input.topicId,
             },
           },
@@ -82,13 +75,13 @@ export const postRouter = createTRPCRouter({
         // Upload image to Supabase storage
         const { path: storagePath, publicUrl } = await uploadPostImage(
           file,
-          user.id,
+          user.twitterId,
         );
 
         // Create post in database
         const post = await ctx.db.post.create({
           data: {
-            userId: user.id,
+            twitterId: user.twitterId,
             topicId: input.topicId,
             imageUrl: publicUrl,
             imageKey: storagePath, // Store domain-independent path
@@ -223,8 +216,8 @@ export const postRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const post = await ctx.db.post.findUnique({
         where: {
-          userId_topicId: {
-            userId: ctx.session.user.id,
+          twitterId_topicId: {
+            twitterId: ctx.session.user.twitterId,
             topicId: input.topicId,
           },
         },
@@ -246,7 +239,7 @@ export const postRouter = createTRPCRouter({
     )
     .query(async ({ ctx, input }) => {
       const posts = await ctx.db.post.findMany({
-        where: { userId: ctx.session.user.id },
+        where: { user: { twitterId: ctx.session.user.twitterId } },
         include: {
           topic: {
             select: {

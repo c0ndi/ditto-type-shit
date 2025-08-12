@@ -10,7 +10,7 @@ import {
   protectedProcedure,
 } from "@/server/api/trpc";
 
-export const topicRouter = createTRPCRouter({
+export const topicsRouter = createTRPCRouter({
   /**
    * Get the current active topic
    */
@@ -179,16 +179,19 @@ export const topicRouter = createTRPCRouter({
 
     try {
       const response = await fetch(
-        `${process.env.VERCEL_URL || "http://localhost:3000"}/api/admin/test-topic`,
+        `${process.env.VERCEL_URL ?? "http://localhost:3000"}/api/admin/test-topic`,
         {
           method: "POST",
         },
       );
 
-      const result = await response.json();
+      const result = (await response.json()) as {
+        success: boolean;
+        error?: string;
+      };
 
       if (!result.success) {
-        throw new Error(result.error || "Failed to generate topic");
+        throw new Error(result.error ?? "Failed to generate topic");
       }
 
       return result;

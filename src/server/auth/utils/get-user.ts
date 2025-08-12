@@ -6,7 +6,7 @@ export async function getUser() {
 
   const user = await db.user.findUnique({
     where: {
-      twitterId: session?.user?.id,
+      twitterId: session?.user?.twitterId,
     },
   });
 

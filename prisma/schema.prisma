@@ -22,9 +22,9 @@ datasource db {
 // Necessary for Next auth
 model User {
     id                 String  @id @default(cuid())
+    twitterId          String  @unique
     twitterImage       String?
     twitterUsername    String?
-    twitterId          String? @unique
     twitterDisplayName String?
 
     isAnonymous Boolean @default(false) // Toggle for anonymous profile display
@@ -129,10 +129,10 @@ model Post {
     updatedAt DateTime @updatedAt
 
     // Relations
-    userId  String
-    user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-    topicId String
-    topic   Topic  @relation(fields: [topicId], references: [id], onDelete: Cascade)
+    twitterId String
+    user      User   @relation(fields: [twitterId], references: [twitterId], onDelete: Cascade)
+    topicId   String
+    topic     Topic  @relation(fields: [topicId], references: [id], onDelete: Cascade)
 
     // Image data
     imageUrl String
@@ -163,7 +163,7 @@ model Post {
     comments Comment[]
 
     // Constraints - one post per user per topic
-    @@unique([userId, topicId])
+    @@unique([twitterId, topicId])
     @@map("posts")
 }
 
