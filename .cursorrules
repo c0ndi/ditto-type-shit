@@ -1,0 +1,224 @@
+# Daily Photo Challenge Social App - Project Rules & Architecture
+
+## 🎯 PROJECT OVERVIEW
+
+You are building a gamified social photo-sharing app where users post photos based on daily themes and earn rewards through community engagement and AI validation.
+
+**Core Concept**: Like Bitcoin mining, but for creative content - users "mine" rewards by posting quality, theme-relevant photos that receive positive community engagement.
+
+## 🏗️ ARCHITECTURE & FLOW
+
+### User Journey
+
+1. **Daily Reset**: New topic appears with countdown timer
+2. **Photo Submission**: User uploads ONE photo per day related to topic
+3. **AI Validation**: Background AI analyzes if photo matches topic
+4. **Community Voting**: Users vote (upvote/downvote) on submissions
+5. **Reward Calculation**: After 24h, rewards distributed based on engagement + validation
+
+### Tech Stack
+
+- **Frontend**: Next.js 14, shadcn/ui, Tailwind CSS, TypeScript
+- **Database**: Supabase (PostgreSQL) with Prisma ORM
+- **Authentication**: NextAuth5 with Twitter OAuth (required)
+- **Storage**: Supabase Storage for images
+- **AI**: OpenAI Vision API for image recognition
+- **Background Jobs**: Vercel Cron Jobs or Supabase Edge Functions
+- **State Management**: Zustand
+- **Real-time**: Supabase Realtime for live updates
+
+## 📊 DATABASE SCHEMA SUMMARY
+
+### Core Models
+
+- **Users**: Twitter OAuth required, wallet connections optional, reputation system
+- **Topics**: Daily themes with keywords for AI recognition
+- **Posts**: One per user per topic, includes AI analysis and community validation
+- **Votes**: Upvote/downvote system with sentiment tracking
+- **Comments**: Used for community validation of AI recognition
+- **RewardTransactions**: Point system for gamification
+
+### Key Relationships
+
+- User → Posts (1:many, but 1 per topic)
+- Topic → Posts (1:many)
+- Post → Votes (1:many, unique per user)
+- Post → Comments (1:many)
+
+## 🎮 GAMIFICATION SYSTEM
+
+### Reward Mechanism
+
+1. **Base Points**: Awarded for posting on-theme content
+2. **Engagement Multiplier**: Based on upvotes vs downvotes ratio
+3. **AI Accuracy Bonus**: When community validates AI recognition
+4. **Streak Bonus**: Consecutive daily participation
+
+### Validation Pipeline
+
+1. **Upload**: User submits photo
+2. **AI Analysis**: Extract description and keywords (async)
+3. **Community Input**: Comments and votes over 24h period
+4. **Validation Check**: Compare AI findings with community sentiment
+5. **Reward Distribution**: Calculate and award points
+
+## 🎨 UI/UX REQUIREMENTS
+
+### Key Pages/Components
+
+- **Home Feed**: Daily topic display, countdown timer, photo gallery
+- **Upload Interface**: Drag & drop, preview, one-click submit
+- **Photo Gallery**: Grid layout with voting buttons, sentiment indicators
+- **User Dashboard**: Stats, rewards, posting history
+- **Leaderboard**: Top performers, streaks, achievements
+
+### Design Principles
+
+- **Mobile-first**: Optimized for phone camera uploads
+- **Fast Interactions**: Instant feedback on votes and uploads
+- **Clear Status**: Visual indicators for validation status
+- **Gamification**: Progress bars, achievements, point displays
+
+## 🔧 TECHNICAL IMPLEMENTATION DETAILS
+
+### Authentication Flow
+
+- Twitter OAuth mandatory for account creation
+- Optional wallet connection for future crypto rewards
+- Store Twitter handle and avatar for social features
+
+### Image Processing Pipeline
+
+```
+Upload → Supabase Storage → AI Analysis (background) → Database Update
+```
+
+### AI Recognition Strategy
+
+- Use topic keywords to guide recognition
+- Store confidence scores for validation
+- Compare AI findings with community comments
+- Implement learning feedback loop
+
+### Background Jobs
+
+- **Daily Topic Activation** (00:00 UTC)
+- **AI Image Processing** (immediate after upload)
+- **Reward Calculation** (24h after topic activation)
+- **Community Validation** (analyze comments sentiment)
+
+### Real-time Features
+
+- Live vote counts using Supabase Realtime
+- New post notifications
+- Countdown timer updates
+
+## 📝 CODING STANDARDS & PATTERNS
+
+### File Structure
+
+```
+/app
+  /api
+    /auth
+    /posts
+    /topics
+    /votes
+  /dashboard
+  /upload
+  /components
+    /ui (shadcn)
+    /features
+  /lib
+    /ai
+    /auth
+    /database
+    /utils
+```
+
+### Component Patterns
+
+- Use Server Components for data fetching
+- Client Components for interactivity
+- Custom hooks for reusable logic
+- Separate API routes for each feature
+
+### Database Operations
+
+- Use Prisma for type-safe queries
+- Implement proper error handling
+- Use transactions for vote updates
+- Optimize queries with includes/selects
+
+### Error Handling
+
+- Client-side validation with Zod
+- API error responses with proper status codes
+- Graceful fallbacks for AI service failures
+- User-friendly error messages
+
+## 🚀 DEVELOPMENT PRIORITIES
+
+### Phase 1: Core Functionality
+
+1. Authentication system with Twitter OAuth
+2. Basic post creation and image upload
+3. Daily topic system with countdown
+4. Simple voting mechanism
+
+### Phase 2: AI & Validation
+
+1. Integrate AI image recognition
+2. Background job processing
+3. Community validation system
+4. Basic reward calculation
+
+### Phase 3: Gamification
+
+1. Advanced reward algorithms
+2. User statistics and leaderboards
+3. Achievement system
+4. Social features enhancement
+
+### Phase 4: Polish & Scale
+
+1. Performance optimizations
+2. Advanced moderation tools
+3. Analytics dashboard
+4. Mobile app considerations
+
+## 🎯 KEY SUCCESS METRICS
+
+- **Daily Active Users**: Posting consistently
+- **Engagement Rate**: Votes per post ratio
+- **AI Accuracy**: Community validation success rate
+- **Retention**: 7-day and 30-day user return rates
+
+## ⚠️ IMPORTANT CONSTRAINTS
+
+- **One Post Per User Per Topic**: Enforced at database and UI level
+- **Twitter Account Required**: No anonymous posting allowed
+- **24-Hour Validation Window**: Fixed timeframe for community input
+- **AI Processing**: Must be asynchronous to avoid blocking uploads
+- **Mobile Optimization**: Primary platform is mobile devices
+
+## 🔐 SECURITY CONSIDERATIONS
+
+- Validate image uploads (type, size, content)
+- Rate limiting on API endpoints
+- Sanitize user comments and inputs
+- Secure storage of authentication tokens
+- GDPR compliance for EU users
+
+---
+
+**Remember**: Every feature should enhance the core experience of daily creative challenges with fair, transparent rewards based on community engagement and content quality.
+
+## SETTINGS FOR FILE CREATION
+
+- Each component, util, hook, provider (and everything) change should be listed in the CHANGE_LOG.md in the root directory named with kebab-case
+  - Every change created at the end of the chat (after finishing assigned job) by you should be documented with date and time
+    - for ex. Changing the profile picture displaying [date with time] in the CHANGE_LOG.md
+- When creating new files for new views always keep the same folder structure
+- New file should be documented at the top with good structe same everytime
+- When creating something shared more than 1 time do it at the specific shared view
