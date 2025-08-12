@@ -1,0 +1,42 @@
+# Vercelignore - Files to exclude from Vercel deployment
+
+# Development files
+.env.local
+.env.development
+.env.test
+*.log
+
+# Node modules (handled by package manager)
+node_modules
+
+# Development database
+*.db
+*.db-journal
+
+# IDE files
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Build artifacts that should be rebuilt
+.next/cache
+dist/
+
+# Prisma migrations (we use db push for Vercel)
+prisma/migrations/
+
+# Test files
+**/*.test.*
+**/*.spec.*
+test/
+tests/
+__tests__/
+
+# Documentation
+README.md
+docs/

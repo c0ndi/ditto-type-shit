@@ -2,7 +2,11 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider = "prisma-client-js"
+    provider   = "prisma-client-js"
+    // Vercel optimization: reduce bundle size
+    engineType = "library"
+    // Generate client in node_modules for better caching
+    output     = "../node_modules/.prisma/client"
 }
 
 datasource db {
