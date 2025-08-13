@@ -137,6 +137,7 @@ model Post {
     // Image data
     imageUrl String
     imageKey String // Supabase storage key
+    blurHash String? // BlurHash for image placeholder
 
     // AI Recognition (initial)
     aiDescription   String? // "Red car with yellow fruit"

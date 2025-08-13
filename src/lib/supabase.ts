@@ -1,10 +1,11 @@
 /**
- * Created on: Supabase client configuration for image storage - 12/08/2025 15:36
- * Purpose: Client and server-side Supabase configurations for post image uploads
+ * Updated on: Simplified Supabase storage with BlurHash string generation - 12/09/2025 00:06
+ * Purpose: Client and server-side Supabase configurations for post image uploads with BlurHash generation
  */
 
 import { createClient } from "@supabase/supabase-js";
 import { env } from "@/env";
+import { generateBlurHash } from "./image-processing";
 
 // Client-side Supabase instance
 export const supabase = createClient(
@@ -55,8 +56,8 @@ export function generatePostImagePath(
 }
 
 /**
- * Uploads an image to Supabase storage
- * Returns the storage path (without domain) for database storage
+ * Uploads an image to Supabase storage and generates BlurHash
+ * Returns the storage path and BlurHash string for database storage
  */
 export async function uploadPostImage(
   file: File,
@@ -64,6 +65,7 @@ export async function uploadPostImage(
 ): Promise<{
   path: string;
   publicUrl: string;
+  blurHash: string;
 }> {
   // Validate file
   if (
@@ -81,27 +83,46 @@ export async function uploadPostImage(
   // Generate unique path
   const storagePath = generatePostImagePath(twitterId, file.name);
 
-  // Upload to Supabase
-  const { data, error } = await supabase.storage
-    .from(STORAGE_CONFIG.BUCKET_NAME)
-    .upload(storagePath, file, {
-      cacheControl: "3600",
-      upsert: false,
-    });
+  try {
+    // Convert file to buffer for BlurHash generation
+    const fileBuffer = Buffer.from(await file.arrayBuffer());
 
-  if (error) {
-    throw new Error(`Upload failed: ${error.message}`);
+    // Generate BlurHash and upload image in parallel
+    const [blurHashResult, uploadResult] = await Promise.all([
+      generateBlurHash(fileBuffer),
+      supabase.storage
+        .from(STORAGE_CONFIG.BUCKET_NAME)
+        .upload(storagePath, file, {
+          cacheControl: "3600",
+          upsert: false,
+        }),
+    ]);
+
+    if (uploadResult.error) {
+      throw new Error(`Image upload failed: ${uploadResult.error.message}`);
+    }
+
+    // Get public URL
+    const { data: urlData } = supabase.storage
+      .from(STORAGE_CONFIG.BUCKET_NAME)
+      .getPublicUrl(storagePath);
+
+    return {
+      path: storagePath, // Store this in database (domain-independent)
+      publicUrl: urlData.publicUrl, // Use this for display
+      blurHash: blurHashResult, // BlurHash string for react-blurhash component
+    };
+  } catch (error) {
+    // Clean up uploaded file in case of error
+    await supabase.storage
+      .from(STORAGE_CONFIG.BUCKET_NAME)
+      .remove([storagePath])
+      .catch(() => {
+        // Ignore cleanup errors
+      });
+
+    throw error;
   }
-
-  // Get public URL
-  const { data: urlData } = supabase.storage
-    .from(STORAGE_CONFIG.BUCKET_NAME)
-    .getPublicUrl(storagePath);
-
-  return {
-    path: storagePath, // Store this in database (domain-independent)
-    publicUrl: urlData.publicUrl, // Use this for display
-  };
 }
 
 /**

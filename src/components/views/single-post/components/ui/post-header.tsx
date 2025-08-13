@@ -3,7 +3,7 @@ import { CardHeader } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { formatDistanceToNow } from "date-fns";
-import type { Post } from "../types";
+import type { Post } from "../../types";
 
 type Props = {
   post: Post;

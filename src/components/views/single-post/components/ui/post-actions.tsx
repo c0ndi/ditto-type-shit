@@ -2,7 +2,7 @@ import { usePostVoting } from "@/hooks";
 import { Button } from "@/components/ui/button";
 import { CardContent } from "@/components/ui/card";
 import { ThumbsUp, ThumbsDown, MessageCircle, Heart } from "lucide-react";
-import type { Post } from "../types";
+import type { Post } from "../../types";
 
 type Props = {
   post: Post;

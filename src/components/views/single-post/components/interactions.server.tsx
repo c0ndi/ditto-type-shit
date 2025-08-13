@@ -9,7 +9,7 @@ type Props = {
   initialPost: inferProcedureOutput<AppRouter["post"]["getById"]>;
 }
 
-export async function SecondLoadServer({ postId, initialPost }: Props) {
+export async function InteractionsServer({ postId, initialPost }: Props) {
   const comments = await api.post.getComments({ postId: postId });
   const userVote = await api.post.getUserVote({ postId: postId });
 

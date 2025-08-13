@@ -1,6 +1,6 @@
 /**
- * Post Card Content Component - Updated on 12/08/2025 17:35
- * Displays individual post content within the feed with interactive voting
+ * Post Card Content Component - Updated on 12/08/2025 23:56
+ * Displays individual post content within the feed with interactive voting and blur placeholder images
  * Reads live data from tRPC cache to reflect optimistic updates in real-time
  */
 
@@ -12,12 +12,12 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { formatDistanceToNow } from "date-fns";
 import { ThumbsUp, ThumbsDown, Heart, MessageCircle, Trophy, User } from "lucide-react";
-import Image from "next/image";
 import { type inferProcedureOutput } from "@trpc/server";
 import type { AppRouter } from "@/server/api/root";
 import { usePostVoting } from "@/hooks/use-post-voting";
 import Link from "next/link";
 import { api } from "@/trpc/react";
+import { PostBlurImage } from "@/components/shared/post-blur-image";
 
 export function PostCardContent({ post }: { post: inferProcedureOutput<AppRouter["post"]["getTodaysPosts"]>[number] }) {
   const { upvote, downvote, isVoting, userVote } = usePostVoting({ postId: post.id });
@@ -47,15 +47,15 @@ export function PostCardContent({ post }: { post: inferProcedureOutput<AppRouter
       <Card className="overflow-hidden hover:shadow-md transition-shadow">
         <CardContent className="p-0">
           {/* Image */}
-          <div className="relative aspect-square">
-            <Image
-              src={currentPost.imageUrl}
-              alt="User submission"
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            />
-          </div>
+          <PostBlurImage
+            src={currentPost.imageUrl}
+            blurHash={currentPost.blurHash}
+            alt="User submission"
+            containerClassName="aspect-square"
+            fill
+            className="object-cover"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          />
 
           {/* Content */}
           <div className="p-4 space-y-3">

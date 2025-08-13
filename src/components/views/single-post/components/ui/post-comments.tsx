@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Loader2, Send } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatDistanceToNow } from "date-fns";
-import type { Post } from "../types";
+import type { Post } from "../../types";
 
 type Props = {
   post: Post;

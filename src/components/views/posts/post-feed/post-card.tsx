@@ -1,14 +1,14 @@
 /**
- * Post Card Component - Created on 12/08/2025 17:00
- * Individual post display in the feed with user info and engagement
+ * Post Card Component - Updated on 12/08/2025 23:57
+ * Individual post display in the feed with user info, engagement, and blur placeholder images
  */
 
-import Image from "next/image";
 import { formatDistanceToNow } from "date-fns";
 import { Heart, MessageCircle, User, Trophy } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { PostBlurImage } from "@/components/ui/post-blur-image";
 import { type inferProcedureOutput } from "@trpc/server";
 import type { AppRouter } from "@/server/api/root";
 
@@ -24,15 +24,15 @@ export function PostCard({ post }: PostCardProps) {
     <Card className="overflow-hidden hover:shadow-md transition-shadow">
       <CardContent className="p-0">
         {/* Image */}
-        <div className="relative aspect-square">
-          <Image
-            src={post.imageUrl}
-            alt="User submission"
-            fill
-            className="object-cover"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          />
-        </div>
+        <PostBlurImage
+          src={post.imageUrl}
+          blurHash={post.blurHash}
+          alt="User submission"
+          containerClassName="aspect-square"
+          fill
+          className="object-cover"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        />
 
         {/* Content */}
         <div className="p-4 space-y-3">

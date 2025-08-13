@@ -195,4 +195,55 @@ This file documents all changes made to the Ditto2 Daily Photo Challenge applica
 - Component now uses getTodaysPosts query data to reflect real-time cache changes - 12/08/2025 17:35
 - Maintains fallback to original prop data for reliability - 12/08/2025 17:35
 
+### Post Detail Skeleton Components
+
+- Created PostHeaderSkeleton component matching the structure of PostHeader with loading placeholders - 12/27/2024 13:55
+- Created PostImageSkeleton component matching the aspect ratio and structure of PostImage - 12/27/2024 13:55
+- Enhanced ContentSkeleton to combine both PostHeader and PostImage skeleton components - 12/27/2024 13:55
+- Added proper loading animations and consistent styling across all skeleton components - 12/27/2024 13:55
+- Skeleton components provide smooth loading experience while posts are being fetched - 12/27/2024 13:55
+
+### BlurHash Image System Implementation
+
+- **Installed BlurHash dependencies**: `blurhash` and `sharp` packages for image processing - 12/08/2025 23:45
+- **Created image processing utilities** (`src/lib/image-processing.ts`):
+  - `generateBlurHash()` - Creates BlurHash strings from image buffers
+  - `generateBlurImage()` - Creates small blur images for immediate placeholders
+  - `processImageForBlur()` - Processes images for both BlurHash and blur images
+  - `getBlurImagePath()` - Utility to generate blur image paths with \_blur suffix
+- **Enhanced Supabase storage functions** (`src/lib/supabase.ts`):
+  - Updated `uploadPostImage()` to generate and upload blur images alongside originals
+  - Added `getPostBlurImageUrl()` to retrieve blur image URLs
+  - Updated `deletePostImage()` to remove both original and blur images
+  - Maintained backward compatibility with existing image URL structure
+- **Created blur image utilities** (`src/lib/blur-image-utils.ts`):
+  - Helper functions for frontend blur image integration
+  - Example React component usage patterns
+  - CSS-based blur background utilities
+- **Image storage structure**: Original images maintain existing paths, blur images saved with `_blur` suffix
+- **No database changes required**: Blur images accessed dynamically using existing imageKey field
+
+### React-BlurHash Implementation with Database Storage
+
+- **Installed react-blurhash package**: Professional BlurHash decoding component for React - 12/09/2025 00:10
+- **Added blurHash field to Post model**: Stores BlurHash strings in database for instant placeholder rendering
+- **Simplified image processing** (`src/lib/image-processing.ts`):
+  - Removed blur image generation, now only generates BlurHash strings
+  - Optimized processing with smaller resize dimensions (400x300)
+  - Uses BlurHash configuration for consistent quality
+- **Updated Supabase storage** (`src/lib/supabase.ts`):
+  - Removed blur image storage and URLs
+  - Now generates BlurHash during upload and returns string
+  - Simplified cleanup and error handling
+- **Created PostBlurImage component** (`src/components/shared/post-blur-image.tsx`):
+  - Uses react-blurhash Blurhash component for instant placeholder rendering
+  - Progressive loading from BlurHash to full image
+  - Built-in loading states and smooth transitions
+  - No additional image storage required
+- **Updated existing components**:
+  - All post image displays now use BlurHash placeholders
+  - Database stores BlurHash strings instead of blur image paths
+  - Better performance with instant placeholder rendering
+- **Benefits**: Professional BlurHash implementation, reduced storage usage, instant placeholders, better perceived performance
+
 ---

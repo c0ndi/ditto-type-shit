@@ -78,11 +78,12 @@ export const postsRouter = createTRPCRouter({
           type: input.imageType,
         });
 
-        // Upload image to Supabase storage
-        const { path: storagePath, publicUrl } = await uploadPostImage(
-          file,
-          user.twitterId,
-        );
+        // Upload image to Supabase storage and generate BlurHash
+        const {
+          path: storagePath,
+          publicUrl,
+          blurHash,
+        } = await uploadPostImage(file, user.twitterId);
 
         // Create post in database
         const post = await ctx.db.post.create({
@@ -91,6 +92,7 @@ export const postsRouter = createTRPCRouter({
             topicId: input.topicId,
             imageUrl: publicUrl,
             imageKey: storagePath, // Store domain-independent path
+            blurHash: blurHash, // Store BlurHash for react-blurhash component
           },
           include: {
             user: {

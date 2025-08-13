@@ -226,3 +226,4 @@ Upload → Supabase Storage → AI Analysis (background) → Database Update
 - When creating new files for new views always keep the same folder structure
 - New file should be documented at the top with good structe same everytime
 - When creating something shared more than 1 time do it at the specific shared view
+- Dont create aditional index.ts to export files
