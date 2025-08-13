@@ -49,7 +49,7 @@ export function PostCardContent({ post }: { post: inferProcedureOutput<AppRouter
           {/* Image */}
           <PostBlurImage
             src={currentPost.imageUrl}
-            blurHash={currentPost.blurHash}
+            blurDataUrl={currentPost.blurDataUrl}
             alt="User submission"
             containerClassName="aspect-square"
             fill

@@ -16,7 +16,7 @@ const config = {
       // Placeholder
       {
         protocol: "https",
-        hostname: "picsum.photos",
+        hostname: "images.unsplash.com",
       },
     ],
   },

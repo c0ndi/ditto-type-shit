@@ -1,6 +1,6 @@
 /**
- * Top Navigation Component - Created on 12/08/2025 16:48
- * Features: User dropdown with profile and sign out functionality
+ * Top Navigation Component - Updated on 12/09/2025
+ * Features: Tech crypto aesthetic navigation with glassmorphism and user dropdown
  */
 "use client";
 
@@ -23,44 +23,46 @@ export function TopNavigation() {
   const { data: session, status } = useSession();
 
   const handleSignOut = () => {
-    signOut({ callbackUrl: "/signin" });
+    void signOut({ callbackUrl: "/signin" });
   };
 
   return (
-    <nav className="border-b bg-background px-4 py-3">
+    <nav className="glass-card border-b border-border/50 backdrop-blur-xl bg-background/80 px-4 py-4 sticky top-0 z-50">
       <div className="mx-auto flex max-w-6xl items-center justify-between">
         {/* Logo/Brand */}
         <Link
           href="/"
-          className="flex items-center gap-2 text-xl font-bold text-foreground hover:text-primary transition-colors"
+          className="flex items-center gap-3 text-2xl font-bold hover:scale-105 transition-all duration-300 group"
         >
-          <Camera className="h-6 w-6" />
-          Ditto
+          <div className="p-2 rounded-2xl electric-gradient glow-effect group-hover:scale-110 transition-transform duration-300">
+            <Camera className="h-6 w-6 text-white" />
+          </div>
+          <span className="gradient-text">DITTO</span>
         </Link>
 
         {/* User Section */}
         <div className="flex items-center gap-4">
           {status === "loading" ? (
-            <div className="h-8 w-8 animate-pulse rounded-full bg-muted" />
+            <div className="h-10 w-10 animate-pulse rounded-full bg-primary/20 border-2 border-primary/30" />
           ) : session?.user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                  <Avatar className="h-8 w-8">
+                <Button variant="ghost" className="relative h-10 w-10 rounded-full p-0 hover:scale-110 hover:glow-effect">
+                  <Avatar className="h-10 w-10 ring-2 ring-primary/20 hover:ring-primary/40 transition-all duration-300">
                     <AvatarImage
                       src={session.user.profile_image_url}
                       alt={session.user.username || "User"}
                     />
-                    <AvatarFallback>
+                    <AvatarFallback className="bg-primary/10 text-primary font-bold">
                       {session.user.username?.[0]?.toUpperCase() || "U"}
                     </AvatarFallback>
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56" align="end" forceMount>
-                <DropdownMenuLabel className="font-normal">
-                  <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium leading-none">
+              <DropdownMenuContent className="w-64 glass-card tech-border rounded-2xl p-2" align="end" forceMount>
+                <DropdownMenuLabel className="font-normal p-3">
+                  <div className="flex flex-col space-y-2">
+                    <p className="text-sm font-semibold leading-none">
                       {session.user.name}
                     </p>
                     <p className="text-xs leading-none text-muted-foreground">
@@ -68,25 +70,29 @@ export function TopNavigation() {
                     </p>
                   </div>
                 </DropdownMenuLabel>
-                <DropdownMenuSeparator />
+                <DropdownMenuSeparator className="bg-border/50" />
                 <DropdownMenuItem asChild>
-                  <Link href="/profile" className="flex items-center gap-2 cursor-pointer">
-                    <User className="h-4 w-4" />
+                  <Link href="/profile" className="flex items-center gap-3 cursor-pointer rounded-xl p-3 hover:bg-primary/10 transition-colors">
+                    <div className="p-1 rounded-lg bg-primary/10">
+                      <User className="h-4 w-4 text-primary" />
+                    </div>
                     Profile
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuSeparator />
+                <DropdownMenuSeparator className="bg-border/50" />
                 <DropdownMenuItem
                   onClick={handleSignOut}
-                  className="flex items-center gap-2 cursor-pointer text-red-600 focus:text-red-600"
+                  className="flex items-center gap-3 cursor-pointer rounded-xl p-3 text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors"
                 >
-                  <LogOut className="h-4 w-4" />
+                  <div className="p-1 rounded-lg bg-red-500/10">
+                    <LogOut className="h-4 w-4" />
+                  </div>
                   Sign out
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <Button asChild>
+            <Button asChild size="sm" className="rounded-2xl">
               <Link href="/signin">Sign in</Link>
             </Button>
           )}

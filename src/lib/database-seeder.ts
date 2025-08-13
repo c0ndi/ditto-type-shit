@@ -1,560 +1,372 @@
 /**
- * Database Seeder - Created on 12/08/2025 16:55
- * Comprehensive seeding system for generating realistic test data
+ * Updated on: Simplified database seeding utilities - 12/09/2025 00:15
+ * Purpose: Generate minimal test data for development - 10 users, 3 topics, 2 posts per user
  */
 
 import { db } from "@/server/db";
 import { type ValidationStatus, type VoteType } from "@prisma/client";
 
-// Sample data for generating realistic content
-const SAMPLE_USERNAMES = [
-  "photo_hunter_",
-  "creative_lens_",
-  "snap_master_",
-  "visual_story_",
-  "pixel_artist_",
-  "frame_seeker_",
-  "light_chaser_",
-  "moment_capture_",
-  "street_wanderer_",
-  "nature_eye_",
-  "urban_explorer_",
-  "color_palette_",
-  "bokeh_dreams_",
-  "golden_hour_",
-  "shadow_play_",
-  "macro_world_",
-  "candid_shots_",
-  "portrait_pro_",
-  "landscape_lover_",
-  "vintage_vibes_",
-  "minimalist_frame_",
-  "dramatic_light_",
-  "texture_hunter_",
-  "geometry_finder_",
-  "emotion_catcher_",
-  "travel_lens_",
-  "food_stylist_",
-  "architecture_eye_",
-  "wildlife_tracker_",
-  "abstract_mind_",
-];
-
-const SAMPLE_DISPLAY_NAMES = [
-  "Alex Chen",
-  "Maya Patel",
-  "Jordan Kim",
-  "Riley Johnson",
-  "Casey Wong",
-  "Morgan Davis",
-  "Avery Taylor",
-  "Quinn Anderson",
-  "Sage Wilson",
-  "Phoenix Liu",
-  "River Martinez",
-  "Skylar Brown",
-  "Rowan Garcia",
-  "Ember Rodriguez",
-  "Aspen Miller",
-  "Sage Thompson",
-  "Ocean Park",
-  "Storm Young",
-  "Luna Wright",
-  "Atlas Lopez",
-  "Nova Green",
-  "Orion Adams",
-  "Zara Hall",
-  "Kai Walker",
-  "Iris Lee",
-  "Leo Zhang",
-  "Mia Foster",
-  "Ben Cooper",
-  "Zoe Clark",
-  "Max Rivera",
+// Simplified sample data
+const SAMPLE_USERS = [
+  {
+    twitterUsername: "alex_photos",
+    twitterDisplayName: "Alex Thompson",
+    twitterImage:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
+  },
+  {
+    twitterUsername: "sarah_captures",
+    twitterDisplayName: "Sarah Johnson",
+    twitterImage:
+      "https://images.unsplash.com/photo-1494790108755-2616b612b5bc?w=150&h=150&fit=crop&crop=face",
+  },
+  {
+    twitterUsername: "mike_lens",
+    twitterDisplayName: "Mike Rodriguez",
+    twitterImage:
+      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
+  },
+  {
+    twitterUsername: "emma_shots",
+    twitterDisplayName: "Emma Wilson",
+    twitterImage:
+      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
+  },
+  {
+    twitterUsername: "david_frame",
+    twitterDisplayName: "David Chen",
+    twitterImage:
+      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face",
+  },
+  {
+    twitterUsername: "lisa_focus",
+    twitterDisplayName: "Lisa Anderson",
+    twitterImage:
+      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop&crop=face",
+  },
+  {
+    twitterUsername: "james_snap",
+    twitterDisplayName: "James Taylor",
+    twitterImage:
+      "https://images.unsplash.com/photo-1507591064344-4c6ce005b128?w=150&h=150&fit=crop&crop=face",
+  },
+  {
+    twitterUsername: "nina_pixel",
+    twitterDisplayName: "Nina Patel",
+    twitterImage:
+      "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&h=150&fit=crop&crop=face",
+  },
+  {
+    twitterUsername: "ryan_visual",
+    twitterDisplayName: "Ryan O'Connor",
+    twitterImage:
+      "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&h=150&fit=crop&crop=face",
+  },
+  {
+    twitterUsername: "kelly_shutter",
+    twitterDisplayName: "Kelly Martinez",
+    twitterImage:
+      "https://images.unsplash.com/photo-1557053910-d9eadeed1c58?w=150&h=150&fit=crop&crop=face",
+  },
 ];
 
 const SAMPLE_TOPICS = [
   {
     title: "Urban Shadows",
     description: "Capture interesting shadows in city environments",
-    keywords: [
-      "shadow",
-      "urban",
-      "city",
-      "building",
-      "street",
-      "architecture",
-      "light",
-      "contrast",
-    ],
+    keywords: ["shadow", "urban", "city", "building", "street", "architecture"],
   },
   {
     title: "Colorful Food",
     description: "Bright and vibrant food photography",
-    keywords: [
-      "food",
-      "colorful",
-      "bright",
-      "vibrant",
-      "meal",
-      "dish",
-      "cuisine",
-      "rainbow",
-    ],
+    keywords: ["food", "colorful", "bright", "vibrant", "meal", "dish"],
   },
   {
-    title: "Reflections",
-    description: "Mirror images and water reflections",
-    keywords: [
-      "reflection",
-      "mirror",
-      "water",
-      "glass",
-      "surface",
-      "symmetry",
-      "double",
-      "image",
-    ],
-  },
-  {
-    title: "Pets in Action",
-    description: "Animals doing something interesting or funny",
-    keywords: [
-      "pet",
-      "animal",
-      "dog",
-      "cat",
-      "action",
-      "movement",
-      "playing",
-      "running",
-    ],
-  },
-  {
-    title: "Minimalist Design",
-    description: "Clean, simple compositions with lots of negative space",
-    keywords: [
-      "minimal",
-      "simple",
-      "clean",
-      "negative space",
-      "geometric",
-      "modern",
-      "less",
-    ],
-  },
-  {
-    title: "Street Art",
-    description: "Murals, graffiti, and artistic expressions in public spaces",
-    keywords: [
-      "street art",
-      "mural",
-      "graffiti",
-      "wall",
-      "artistic",
-      "public",
-      "creative",
-      "urban art",
-    ],
-  },
-  {
-    title: "Golden Hour",
-    description: "Photos taken during the magic hour of sunset or sunrise",
-    keywords: [
-      "golden hour",
-      "sunset",
-      "sunrise",
-      "warm light",
-      "magic hour",
-      "glow",
-      "amber",
-    ],
-  },
-  {
-    title: "Patterns in Nature",
-    description: "Natural patterns, textures, and repetitive elements",
-    keywords: [
-      "pattern",
-      "nature",
-      "texture",
-      "repetitive",
-      "organic",
-      "natural",
-      "geometry",
-    ],
-  },
-  {
-    title: "Black and White",
-    description: "Monochrome photography that tells a story",
-    keywords: [
-      "black and white",
-      "monochrome",
-      "contrast",
-      "dramatic",
-      "timeless",
-      "classic",
-    ],
-  },
-  {
-    title: "Close-up Details",
-    description: "Macro photography showing intricate details",
-    keywords: [
-      "macro",
-      "close-up",
-      "detail",
-      "intricate",
-      "small",
-      "texture",
-      "magnified",
-    ],
+    title: "Nature Close-ups",
+    description: "Macro photography of plants and natural details",
+    keywords: ["nature", "macro", "plant", "flower", "leaf", "detail"],
   },
 ];
 
-const SAMPLE_COMMENTS = [
-  "Amazing composition! Love the lighting.",
-  "This perfectly captures the theme!",
-  "Great use of color and contrast.",
-  "Such a creative interpretation!",
-  "The detail in this shot is incredible.",
-  "Perfect timing on this capture.",
-  "Love the artistic vision here.",
-  "This has such a unique perspective.",
-  "Beautiful work! Very inspiring.",
-  "Excellent technical execution.",
-  "The mood in this photo is perfect.",
-  "Such an interesting subject choice.",
-  "Great eye for photography!",
-  "This really stands out from the crowd.",
-  "Fantastic use of the theme!",
+const SAMPLE_POST_IMAGES = [
+  {
+    url: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop",
+    blurDataUrl:
+      "data:image/webp;base64,UklGRjwCAABXRUJQVlA4IDACAAAwEQCdASoIAAYAAUAmJZwAAudCwPyvwAD+/6qd6uqd6uqd6uqd6uqd6uqd6uqd6uqd6uqd6uqd6g==",
+  },
+  {
+    url: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800&h=600&fit=crop",
+    blurDataUrl:
+      "data:image/webp;base64,UklGRjwCAABXRUJQVlA4IDACAAAwEQCdASoIAAYAAUAmJZwAAudCwPyvwAD+/6qd6uqd6uqd6uqd6uqd6uqd6uqd6uqd6uqd6uqd6g==",
+  },
+  {
+    url: "https://images.unsplash.com/photo-1540553016722-983e48a2cd10?w=800&h=600&fit=crop",
+    blurDataUrl:
+      "data:image/webp;base64,UklGRjwCAABXRUJQVlA4IDACAAAwEQCdASoIAAYAAUAmJZwAAudCwPyvwAD+/6qd6uqd6uqd6uqd6uqd6uqd6uqd6uqd6uqd6uqd6g==",
+  },
+  {
+    url: "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=800&h=600&fit=crop",
+    blurDataUrl:
+      "data:image/webp;base64,UklGRjwCAABXRUJQVlA4IDACAAAwEQCdASoIAAYAAUAmJZwAAudCwPyvwAD+/6qd6uqd6uqd6uqd6uqd6uqd6uqd6uqd6uqd6uqd6g==",
+  },
+  {
+    url: "https://images.unsplash.com/photo-1567306301408-9b74779a11af?w=800&h=600&fit=crop",
+    blurDataUrl:
+      "data:image/webp;base64,UklGRjwCAABXRUJQVlA4IDACAAAwEQCdASoIAAYAAUAmJZwAAudCwPyvwAD+/6qd6uqd6uqd6uqd6uqd6uqd6uqd6uqd6uqd6uqd6g==",
+  },
+  {
+    url: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&h=600&fit=crop",
+    blurDataUrl:
+      "data:image/webp;base64,UklGRjwCAABXRUJQVlA4IDACAAAwEQCdASoIAAYAAUAmJZwAAudCwPyvwAD+/6qd6uqd6uqd6uqd6uqd6uqd6uqd6uqd6uqd6uqd6g==",
+  },
+  {
+    url: "https://images.unsplash.com/photo-1551782450-a2132b4ba21d?w=800&h=600&fit=crop",
+    blurDataUrl:
+      "data:image/webp;base64,UklGRjwCAABXRUJQVlA4IDACAAAwEQCdASoIAAYAAUAmJZwAAudCwPyvwAD+/6qd6uqd6uqd6uqd6uqd6uqd6uqd6uqd6uqd6uqd6g==",
+  },
+  {
+    url: "https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?w=800&h=600&fit=crop",
+    blurDataUrl:
+      "data:image/webp;base64,UklGRjwCAABXRUJQVlA4IDACAAAwEQCdASoIAAYAAUAmJZwAAudCwPyvwAD+/6qd6uqd6uqd6uqd6uqd6uqd6uqd6uqd6uqd6uqd6g==",
+  },
 ];
 
-// Generate random number between min and max (inclusive)
+// Utility functions
 function randomInt(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-// Generate random float between min and max
-function randomFloat(min: number, max: number): number {
-  return Math.random() * (max - min) + min;
-}
-
-// Pick random item from array
 function randomChoice<T>(array: T[]): T {
   return array[Math.floor(Math.random() * array.length)]!;
 }
 
-// Pick multiple random items from array
-function randomChoices<T>(array: T[], count: number): T[] {
-  const shuffled = [...array].sort(() => 0.5 - Math.random());
-  return shuffled.slice(0, count);
-}
-
-// Generate random Twitter ID
 function generateTwitterId(): string {
-  return Math.floor(
-    Math.random() * 9000000000000000 + 1000000000000000,
-  ).toString();
+  return Math.random().toString().slice(2, 17);
 }
 
-// Generate random date in the past 30 days
-function randomRecentDate(daysAgo = 30): Date {
-  const now = new Date();
-  const msAgo = daysAgo * 24 * 60 * 60 * 1000;
-  return new Date(now.getTime() - Math.random() * msAgo);
+function generateImageKey(userId: string, timestamp: number): string {
+  const randomId = Math.random().toString(36).substring(2, 8);
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, "0");
+  const day = String(today.getDate()).padStart(2, "0");
+
+  return `posts/${year}/${month}/${day}/${userId}/${timestamp}-${randomId}.jpg`;
 }
 
-export async function seedDatabase() {
+/**
+ * Seeds the database with test data
+ */
+export async function seedDatabase(currentUserTwitterId?: string) {
   console.log("🌱 Starting database seeding...");
 
   try {
-    // 1. Create Topics first
-    console.log("📋 Creating topics...");
-    const topics = [];
-    for (let i = 0; i < SAMPLE_TOPICS.length; i++) {
-      const topicData = SAMPLE_TOPICS[i]!;
-      const date = new Date();
-      date.setDate(date.getDate() - (SAMPLE_TOPICS.length - i));
+    // 1. Create topics
+    console.log("📝 Creating topics...");
+    const createdTopics = [];
 
-      const topic = await db.topic.create({
+    for (let i = 0; i < SAMPLE_TOPICS.length; i++) {
+      const topic = SAMPLE_TOPICS[i]!;
+      const date = new Date();
+      date.setDate(date.getDate() - (SAMPLE_TOPICS.length - 1 - i)); // Spread topics across days
+
+      const createdTopic = await db.topic.create({
         data: {
-          title: topicData.title,
-          description: topicData.description,
-          keywords: topicData.keywords,
+          title: topic.title,
+          description: topic.description,
+          keywords: topic.keywords,
           date: date,
-          isActive: i === SAMPLE_TOPICS.length - 1, // Only the last one is active
+          isActive: i === SAMPLE_TOPICS.length - 1, // Only the last topic is active
         },
       });
-      topics.push(topic);
+
+      createdTopics.push(createdTopic);
+      console.log(`  ✅ Created topic: ${topic.title}`);
     }
-    console.log(`✅ Created ${topics.length} topics`);
 
-    // 2. Create Users
+    // 2. Create users
     console.log("👥 Creating users...");
-    const users = [];
-    for (let i = 0; i < 30; i++) {
-      const twitterId = generateTwitterId();
-      const username = randomChoice(SAMPLE_USERNAMES) + randomInt(100, 999);
-      const displayName = randomChoice(SAMPLE_DISPLAY_NAMES);
+    const createdUsers = [];
 
+    for (const userData of SAMPLE_USERS) {
       const user = await db.user.create({
         data: {
-          twitterId,
-          twitterUsername: username,
-          twitterDisplayName: displayName,
-          twitterImage: `https://api.dicebear.com/7.x/avatars/svg?seed=${username}`,
-          totalRewards: randomInt(100, 5000),
-          reputation: randomFloat(0, 100),
+          twitterId: generateTwitterId(),
+          twitterUsername: userData.twitterUsername,
+          twitterDisplayName: userData.twitterDisplayName,
+          twitterImage: userData.twitterImage,
+          totalRewards: randomInt(0, 500),
+          reputation: Math.random() * 100,
         },
       });
-      users.push(user);
-    }
-    console.log(`✅ Created ${users.length} users`);
 
-    // 3. Create User Stats
-    console.log("📊 Creating user statistics...");
-    for (const user of users) {
+      // Create stats for user
       await db.stats.create({
         data: {
           userId: user.id,
-          totalLikes: randomInt(10, 500),
-          totalDislikes: randomInt(0, 50),
-          totalViews: randomInt(100, 2000),
-          totalComments: randomInt(5, 200),
-          communitySentiment: randomFloat(-0.5, 1.0),
-          aiAccuracyRate: randomFloat(0.6, 0.95),
-          totalPosts: randomInt(5, 25),
-          consecutiveDays: randomInt(0, 15),
-          longestStreak: randomInt(3, 30),
-          lastPostDate: randomRecentDate(7),
-          topThreeFinishes: randomInt(0, 8),
-          perfectValidations: randomInt(0, 10),
+          totalPosts: 2, // Will create 2 posts per user
+          totalLikes: randomInt(0, 50),
+          totalDislikes: randomInt(0, 10),
+          consecutiveDays: randomInt(1, 10),
+          longestStreak: randomInt(1, 15),
+          lastPostDate: new Date(),
         },
       });
+
+      createdUsers.push(user);
+      console.log(`  ✅ Created user: ${userData.twitterDisplayName}`);
     }
-    console.log("✅ Created user statistics");
 
-    // 4. Create Posts
-    console.log("📷 Creating posts...");
-    const posts = [];
-    const validationStatuses: ValidationStatus[] = [
-      "PENDING",
-      "AI_VALIDATED",
-      "AI_REJECTED",
-      "COMMUNITY_VALIDATED",
-      "COMMUNITY_REJECTED",
-      "FINAL_APPROVED",
-      "FINAL_REJECTED",
-    ];
+    // 3. Create posts (2 per user)
+    console.log("📸 Creating posts...");
+    let imageIndex = 0;
+    const activeTopic = createdTopics.find((t) => t.isActive)!;
 
-    for (const topic of topics) {
-      // Each topic gets posts from 60-80% of users
-      const participatingUsers = randomChoices(users, randomInt(18, 24));
+    for (const user of createdUsers) {
+      const usedTopics = new Set<string>();
 
-      for (const user of participatingUsers) {
-        const post = await db.post.create({
+      // Create 2 posts for each user
+      for (let postNum = 0; postNum < 2; postNum++) {
+        let topic;
+
+        if (postNum === 0) {
+          // First post always goes to active topic
+          topic = activeTopic;
+        } else {
+          // Second post goes to a different topic (not already used)
+          const availableTopics = createdTopics.filter(
+            (t) => !usedTopics.has(t.id),
+          );
+          topic =
+            availableTopics.length > 0 ? randomChoice(availableTopics) : null;
+        }
+
+        // Skip if no available topic (shouldn't happen with 3 topics and 2 posts)
+        if (!topic) continue;
+
+        usedTopics.add(topic.id);
+
+        const imageData =
+          SAMPLE_POST_IMAGES[imageIndex % SAMPLE_POST_IMAGES.length]!;
+        const timestamp = Date.now() - randomInt(0, 86400000); // Random time in last 24h
+
+        await db.post.create({
           data: {
             twitterId: user.twitterId,
             topicId: topic.id,
-            imageUrl: `https://picsum.photos/800/800?random=${user.id + topic.id}`,
-            imageKey: `posts/${topic.date.getFullYear()}/${String(topic.date.getMonth() + 1).padStart(2, "0")}/${String(topic.date.getDate()).padStart(2, "0")}/${user.twitterId}/photo.jpg`,
-            aiDescription: `Photo showing ${randomChoices(topic.keywords, randomInt(2, 4)).join(", ")}`,
-            aiConfidence: randomFloat(0.4, 0.95),
-            aiKeywordsFound: randomChoices(topic.keywords, randomInt(1, 3)),
+            imageUrl: imageData.url,
+            imageKey: generateImageKey(user.twitterId, timestamp),
+            blurDataUrl: imageData.blurDataUrl,
+            aiDescription: "AI-generated description placeholder",
+            aiConfidence: Math.random(),
+            aiKeywordsFound: topic.keywords.slice(0, 2),
             aiProcessed: true,
-            validationStatus: randomChoice(validationStatuses),
-            votes: {
-              create: {
-                userId: user.id,
-                type: randomChoice(["UPVOTE", "DOWNVOTE"]),
-                createdAt: randomRecentDate(5),
-              },
-            },
-            totalViews: randomInt(20, 200),
-            sentiment: randomFloat(-0.3, 1.0),
-            rewardPoints: randomInt(10, 100),
-            rewardCalculated: Math.random() > 0.3,
-            createdAt: randomRecentDate(
-              topic === topics[topics.length - 1] ? 1 : 30,
-            ),
+            validationStatus: randomChoice<ValidationStatus>([
+              "PENDING",
+              "AI_VALIDATED",
+              "COMMUNITY_VALIDATED",
+              "FINAL_APPROVED",
+            ]),
+            totalViews: randomInt(10, 200),
+            sentiment: (Math.random() - 0.5) * 2, // -1 to 1
+            rewardPoints: randomInt(0, 100),
+            createdAt: new Date(timestamp),
           },
         });
-        posts.push(post);
+
+        imageIndex++;
+        console.log(
+          `  ✅ Created post for ${user.twitterDisplayName} on ${topic.title}${topic.isActive ? " (ACTIVE)" : ""}`,
+        );
       }
     }
-    console.log(`✅ Created ${posts.length} posts`);
 
-    // 5. Create Votes
-    console.log("🗳️ Creating votes...");
-    let totalVotes = 0;
-    for (const post of posts) {
-      // Each post gets votes from 30-70% of other users
-      const votingUsers = users.filter((u) => u.twitterId !== post.twitterId);
-      const votersCount = randomInt(
-        Math.floor(votingUsers.length * 0.3),
-        Math.floor(votingUsers.length * 0.7),
-      );
-      const voters = randomChoices(votingUsers, votersCount);
+    // 4. Create some votes
+    console.log("👍 Creating votes...");
+    const allPosts = await db.post.findMany();
+    const voteCount = Math.min(50, allPosts.length * 3); // 3 votes per post max
 
-      for (const voter of voters) {
-        const voteType: VoteType = Math.random() > 0.2 ? "UPVOTE" : "DOWNVOTE"; // 80% upvotes
+    for (let i = 0; i < voteCount; i++) {
+      const post = randomChoice(allPosts);
+      const voter = randomChoice(createdUsers);
 
+      // Skip if user is voting on their own post
+      if (post.twitterId === voter.twitterId) continue;
+
+      try {
         await db.vote.create({
           data: {
             userId: voter.id,
             postId: post.id,
-            type: voteType,
-            createdAt: randomRecentDate(5),
+            type: randomChoice<VoteType>(["UPVOTE", "DOWNVOTE"]),
           },
         });
-        totalVotes++;
+      } catch {
+        // Skip duplicate votes (user already voted on this post)
+        continue;
       }
     }
-    console.log(`✅ Created ${totalVotes} votes`);
 
-    // 6. Create Comments
-    console.log("💬 Creating comments...");
-    let totalComments = 0;
-    for (const post of posts) {
-      // Each post gets 0-8 comments
-      const commentCount = randomInt(0, 8);
-      const commentingUsers = users.filter(
-        (u) => u.twitterId !== post.twitterId,
-      );
+    console.log("✅ Database seeding completed successfully!");
 
-      for (let i = 0; i < commentCount; i++) {
-        const commenter = randomChoice(commentingUsers);
-
-        await db.comment.create({
-          data: {
-            userId: commenter.id,
-            postId: post.id,
-            content: randomChoice(SAMPLE_COMMENTS),
-            aiProcessed: Math.random() > 0.3,
-            contributesToValid:
-              Math.random() > 0.4 ? Math.random() > 0.2 : null,
-            createdAt: randomRecentDate(3),
-          },
-        });
-        totalComments++;
-      }
-    }
-    console.log(`✅ Created ${totalComments} comments`);
-
-    // 7. Create Reward Transactions
-    console.log("💰 Creating reward transactions...");
-    let totalTransactions = 0;
-    const rewardReasons = [
-      "Daily post reward",
-      "Engagement bonus",
-      "Community validation bonus",
-      "AI accuracy bonus",
-      "Streak bonus",
-      "Top performer reward",
-    ];
-
-    for (const user of users) {
-      const transactionCount = randomInt(3, 15);
-
-      for (let i = 0; i < transactionCount; i++) {
-        await db.rewardTransaction.create({
-          data: {
-            userId: user.id,
-            postId:
-              Math.random() > 0.3
-                ? randomChoice(
-                    posts.filter((p) => p.twitterId === user.twitterId),
-                  )?.id
-                : null,
-            points: randomInt(5, 150),
-            reason: randomChoice(rewardReasons),
-            createdAt: randomRecentDate(20),
-          },
-        });
-        totalTransactions++;
-      }
-    }
-    console.log(`✅ Created ${totalTransactions} reward transactions`);
-
-    // 8. Create Post Views
-    console.log("👁️ Creating post views...");
-    let totalViews = 0;
-    for (const post of posts) {
-      const viewCount = randomInt(post.totalViews, post.totalViews + 50);
-
-      for (let i = 0; i < viewCount; i++) {
-        const viewer = Math.random() > 0.3 ? randomChoice(users) : null;
-
-        await db.postView.create({
-          data: {
-            postId: post.id,
-            userId: viewer?.id,
-            ipAddress: viewer ? null : `192.168.1.${randomInt(1, 254)}`,
-            createdAt: randomRecentDate(2),
-          },
-        });
-        totalViews++;
-      }
-    }
-    console.log(`✅ Created ${totalViews} post views`);
-
-    // 9. Create some User Wallets (optional)
-    console.log("💳 Creating user wallets...");
-    let totalWallets = 0;
-    for (const user of users) {
-      if (Math.random() > 0.6) {
-        // 40% of users have wallets
-        await db.userWallet.create({
-          data: {
-            userId: user.id,
-            address: `0x${Math.random().toString(16).substr(2, 40)}`,
-            userWalletName:
-              Math.random() > 0.5 ? "Main Wallet" : "Trading Wallet",
-            chainId: randomChoice([1, 137, 56]), // Ethereum, Polygon, BSC
-            isDefault: true,
-            lastUsed: randomRecentDate(10),
-          },
-        });
-        totalWallets++;
-      }
-    }
-    console.log(`✅ Created ${totalWallets} user wallets`);
-
-    console.log("🎉 Database seeding completed successfully!");
-
-    return {
-      users: users.length,
-      topics: topics.length,
-      posts: posts.length,
-      votes: totalVotes,
-      comments: totalComments,
-      transactions: totalTransactions,
-      views: totalViews,
-      wallets: totalWallets,
+    // Return statistics
+    const stats = {
+      users: createdUsers.length,
+      topics: createdTopics.length,
+      posts: createdUsers.length * 2,
+      votes: await db.vote.count(),
     };
+
+    console.log("📊 Seeding Statistics:");
+    console.log(`  👥 Users: ${stats.users}`);
+    console.log(`  📝 Topics: ${stats.topics}`);
+    console.log(`  📸 Posts: ${stats.posts}`);
+    console.log(`  👍 Votes: ${stats.votes}`);
+
+    return stats;
   } catch (error) {
-    console.error("❌ Error seeding database:", error);
+    console.error("❌ Database seeding failed:", error);
     throw error;
   }
 }
 
-export async function clearDatabase() {
+/**
+ * Clears all data except the current user
+ */
+export async function clearDatabase(currentUserTwitterId?: string) {
   console.log("🧹 Clearing database...");
 
   try {
-    // Delete in order due to foreign key constraints
-    await db.postView.deleteMany({});
-    await db.rewardTransaction.deleteMany({});
-    await db.comment.deleteMany({});
+    // Delete in correct order to respect foreign key constraints
     await db.vote.deleteMany({});
     await db.post.deleteMany({});
-    await db.userWallet.deleteMany({});
     await db.stats.deleteMany({});
     await db.topic.deleteMany({});
-    await db.user.deleteMany({});
 
-    console.log("✅ Database cleared successfully!");
+    // Delete users except current user
+    if (currentUserTwitterId) {
+      await db.user.deleteMany({
+        where: {
+          twitterId: { not: currentUserTwitterId },
+        },
+      });
+      console.log(`✅ Cleared all data except current user`);
+    } else {
+      await db.user.deleteMany({});
+      console.log("✅ Cleared all data including users");
+    }
   } catch (error) {
-    console.error("❌ Error clearing database:", error);
+    console.error("❌ Database clearing failed:", error);
     throw error;
   }
+}
+
+/**
+ * Resets database and seeds with fresh data
+ */
+export async function resetDatabase(currentUserTwitterId?: string) {
+  console.log("🔄 Resetting database...");
+
+  await clearDatabase(currentUserTwitterId);
+  return await seedDatabase();
 }

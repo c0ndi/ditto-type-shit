@@ -14,7 +14,7 @@ export function PostImage({ post }: Props) {
   return (
     <PostBlurImage
       src={post.imageUrl}
-      blurHash={post.blurHash}
+      blurDataUrl={post.blurDataUrl}
       alt="Post content"
       fill
       className="object-cover"

@@ -1,11 +1,11 @@
 /**
- * Updated on: Simplified Supabase storage with BlurHash string generation - 12/09/2025 00:06
- * Purpose: Client and server-side Supabase configurations for post image uploads with BlurHash generation
+ * Updated on: Migrated from BlurHash to Plaiceholder - 13/08/2025 10:50
+ * Purpose: Client and server-side Supabase configurations for post image uploads with plaiceholder blur generation
  */
 
 import { createClient } from "@supabase/supabase-js";
 import { env } from "@/env";
-import { generateBlurHash } from "./image-processing";
+import { generateBlurPlaceholder } from "./image-processing";
 
 // Client-side Supabase instance
 export const supabase = createClient(
@@ -56,8 +56,8 @@ export function generatePostImagePath(
 }
 
 /**
- * Uploads an image to Supabase storage and generates BlurHash
- * Returns the storage path and BlurHash string for database storage
+ * Uploads an image to Supabase storage and generates blur placeholder
+ * Returns the storage path and base64 blur data URL for database storage
  */
 export async function uploadPostImage(
   file: File,
@@ -65,7 +65,7 @@ export async function uploadPostImage(
 ): Promise<{
   path: string;
   publicUrl: string;
-  blurHash: string;
+  blurDataUrl: string;
 }> {
   // Validate file
   if (
@@ -84,12 +84,12 @@ export async function uploadPostImage(
   const storagePath = generatePostImagePath(twitterId, file.name);
 
   try {
-    // Convert file to buffer for BlurHash generation
+    // Convert file to buffer for blur placeholder generation
     const fileBuffer = Buffer.from(await file.arrayBuffer());
 
-    // Generate BlurHash and upload image in parallel
-    const [blurHashResult, uploadResult] = await Promise.all([
-      generateBlurHash(fileBuffer),
+    // Generate blur placeholder and upload image in parallel
+    const [blurDataUrlResult, uploadResult] = await Promise.all([
+      generateBlurPlaceholder(fileBuffer),
       supabase.storage
         .from(STORAGE_CONFIG.BUCKET_NAME)
         .upload(storagePath, file, {
@@ -110,7 +110,7 @@ export async function uploadPostImage(
     return {
       path: storagePath, // Store this in database (domain-independent)
       publicUrl: urlData.publicUrl, // Use this for display
-      blurHash: blurHashResult, // BlurHash string for react-blurhash component
+      blurDataUrl: blurDataUrlResult, // Base64 blur data URL for Next.js Image component
     };
   } catch (error) {
     // Clean up uploaded file in case of error

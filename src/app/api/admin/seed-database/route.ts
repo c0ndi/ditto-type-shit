@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Get the action from request body
-    const body = await request.json();
+    const body = (await request.json()) as { action: string };
     const { action } = body;
 
     if (action === "seed") {

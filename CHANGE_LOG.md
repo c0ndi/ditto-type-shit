@@ -2,6 +2,78 @@
 
 This file documents all changes made to the Ditto2 Daily Photo Challenge application.
 
+## 12/09/2025 - Complete Tech Crypto Aesthetic Redesign
+
+### Dark Theme Implementation
+
+- Implemented sophisticated dark theme with tech/crypto aesthetic using deep blacks (#0A0B0F), charcoal grays, and electric blue accent color (hsl(199 89% 48%)) - 12/09/2025
+- Updated global CSS variables (`src/styles/globals.css`) to use HSL color space for better color manipulation - 12/09/2025
+- Set dark theme as default by adding `dark` class to HTML element in layout - 12/09/2025
+- Updated application metadata with proper branding ("Ditto - Daily Photo Challenge") - 12/09/2025
+
+### Custom CSS Components
+
+- Created glassmorphism effects (`.glass-card`) with backdrop blur and translucent backgrounds - 12/09/2025
+- Added electric gradient utility (`.electric-gradient`) for premium accent elements - 12/09/2025
+- Implemented glow effects (`.glow-effect`) with primary color shadows for interactive elements - 12/09/2025
+- Created tech border effects (`.tech-border`) with animated gradient borders - 12/09/2025
+- Added animated gradient text (`.gradient-text`) with color shifting animation - 12/09/2025
+- Implemented button hover effects (`.btn-tech`) with sliding light animation - 12/09/2025
+
+### Homepage Redesign
+
+- Completely redesigned landing page (`src/app/page.tsx`) with large typography, gradient text, and modern layout - 12/09/2025
+- Added tech-inspired hero section with mining terminology and electric blue accents - 12/09/2025
+- Created feature grid with glassmorphism cards, hover animations, and enhanced iconography - 12/09/2025
+- Added stats section with tech metrics display - 12/09/2025
+- Updated logged-in user section with improved welcome message and glassmorphism containers - 12/09/2025
+
+### Post Card Enhancement
+
+- Redesigned post cards (`src/components/views/posts/post-feed/post-card.tsx`) with glassmorphism effects and tech borders - 12/09/2025
+- Added overlay badges with backdrop blur for hot/popular posts - 12/09/2025
+- Implemented hover animations with image scaling and glow effects - 12/09/2025
+- Enhanced user avatar styling with primary color rings and improved layout - 12/09/2025
+- Created colored engagement buttons with rounded backgrounds - 12/09/2025
+- Added reputation display with tech-inspired styling - 12/09/2025
+
+### Button System Redesign
+
+- Completely overhauled button variants (`src/components/ui/button.tsx`) with rounded corners (rounded-2xl to rounded-3xl) - 12/09/2025
+- Added hover animations including scale effects (hover:scale-105) and enhanced shadows - 12/09/2025
+- Implemented glassmorphism for outline buttons with backdrop blur - 12/09/2025
+- Enhanced button sizes with larger padding and improved typography - 12/09/2025
+- Added tech hover effects to all button variants - 12/09/2025
+
+### Navigation Enhancement
+
+- Redesigned top navigation (`src/components/views/navigation/top-navigation.tsx`) with glassmorphism and sticky positioning - 12/09/2025
+- Created electric gradient logo container with hover animations - 12/09/2025
+- Enhanced user dropdown with glassmorphism effects and improved spacing - 12/09/2025
+- Added tech-inspired loading states and avatar styling - 12/09/2025
+- Implemented smooth hover transitions and scale effects - 12/09/2025
+
+### Visual Enhancements
+
+- Increased border radius throughout the application (1rem default, up to 3xl for cards) - 12/09/2025
+- Added smooth transitions and animations (duration-300 to duration-700) - 12/09/2025
+- Implemented consistent hover states with scale effects and glow animations - 12/09/2025
+- Enhanced typography with better font weights and spacing - 12/09/2025
+- Added background gradients and improved visual hierarchy - 12/09/2025
+
+## 13/08/2025 10:55
+
+### Migration from BlurHash to Plaiceholder
+
+- Migrated from BlurHash to Plaiceholder for better Next.js Image integration - 13/08/2025 10:55
+- Updated image processing logic (`src/lib/image-processing.ts`) to use plaiceholder for base64 blur generation - 13/08/2025 10:45
+- Modified database schema to change `blurHash` field to `blurDataUrl` in Post model - 13/08/2025 10:50
+- Updated Supabase upload function (`src/lib/supabase.ts`) to generate plaiceholder data - 13/08/2025 10:50
+- Refactored post-blur-image component (`src/components/shared/post-blur-image.tsx`) to use Next.js Image blur properties - 13/08/2025 10:55
+- Updated all post components to use new `blurDataUrl` prop instead of `blurHash` - 13/08/2025 10:55
+- Updated database seeder (`src/lib/database-seeder.ts`) with plaiceholder sample data - 13/08/2025 10:55
+- Removed react-blurhash and blurhash dependencies, added plaiceholder - 13/08/2025 10:55
+
 ## 12/08/2025 15:50
 
 ### Post Creation System Implementation

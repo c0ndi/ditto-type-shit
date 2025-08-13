@@ -153,19 +153,15 @@ export const userRouter = createTRPCRouter({
         stats: true,
         posts: {
           include: {
-            _count: {
-              select: {
-                votes: true,
-              },
-            },
-          },
-          select: {
-            id: true,
-            createdAt: true,
             topic: {
               select: {
                 title: true,
                 date: true,
+              },
+            },
+            _count: {
+              select: {
+                votes: true,
               },
             },
           },

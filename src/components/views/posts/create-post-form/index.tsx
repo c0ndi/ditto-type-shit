@@ -28,7 +28,7 @@ export async function CreatePostForm({ className }: CreatePostFormProps) {
   }
 
   return (
-    <div className={`space-y-6 ${className}`}>
+    <div className={`space-y-8 p-8 ${className}`}>
       {/* Topic Info */}
       <TopicInfo topic={topic} />
 

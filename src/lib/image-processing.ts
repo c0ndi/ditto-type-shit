@@ -1,59 +1,36 @@
 /**
- * Updated on: Simplified image processing with react-blurhash - 12/09/2025 00:05
- * Purpose: Generate BlurHash strings from images for use with react-blurhash component
+ * Updated on: Migrated from BlurHash to Plaiceholder - 13/08/2025 10:45
+ * Purpose: Generate base64 blur placeholders from images using plaiceholder for Next.js Image component
  */
 
-import sharp from "sharp";
-import { encode } from "blurhash";
+import { getPlaiceholder } from "plaiceholder";
 
 /**
- * Configuration for BlurHash generation
+ * Configuration for plaiceholder generation
  */
-export const BLURHASH_CONFIG = {
-  // BlurHash generation settings
-  COMPONENTS_X: 4, // Number of X components (horizontal)
-  COMPONENTS_Y: 3, // Number of Y components (vertical)
+export const PLAICEHOLDER_CONFIG = {
+  // Placeholder generation settings
+  size: 8, // Higher resolution placeholder (4-64, default: 4)
 
   // Processing optimization
-  PROCESSING_MAX_WIDTH: 400, // Resize large images before processing for performance
-  PROCESSING_MAX_HEIGHT: 300, // Smaller since we only need BlurHash, not blur images
-} as const;
+  removeAlpha: false, // Keep transparency if present
+  brightness: 1, // No brightness adjustment
+  saturation: 1.2, // Slightly enhance saturation for better placeholders
+};
 
 /**
- * Generates a BlurHash string from an image buffer
- * This hash can be used with react-blurhash component for instant placeholders
+ * Generates a base64 blur placeholder from an image buffer
+ * This can be used directly with Next.js Image component's blurDataURL prop
  */
-export async function generateBlurHash(imageBuffer: Buffer): Promise<string> {
+export async function generateBlurPlaceholder(
+  imageBuffer: Buffer,
+): Promise<string> {
   try {
-    // Resize image for faster processing
-    const processedImage = await sharp(imageBuffer)
-      .resize(
-        BLURHASH_CONFIG.PROCESSING_MAX_WIDTH,
-        BLURHASH_CONFIG.PROCESSING_MAX_HEIGHT,
-        {
-          fit: "inside",
-          withoutEnlargement: true,
-        },
-      )
-      .ensureAlpha() // Ensure RGBA format
-      .raw()
-      .toBuffer({ resolveWithObject: true });
+    const { base64 } = await getPlaiceholder(imageBuffer, PLAICEHOLDER_CONFIG);
 
-    const { data, info } = processedImage;
-    const { width, height } = info;
-
-    // Generate BlurHash string
-    const blurHash = encode(
-      new Uint8ClampedArray(data),
-      width,
-      height,
-      BLURHASH_CONFIG.COMPONENTS_X,
-      BLURHASH_CONFIG.COMPONENTS_Y,
-    );
-
-    return blurHash;
+    return base64;
   } catch (error) {
-    console.error("Error generating BlurHash:", error);
-    throw new Error("Failed to generate BlurHash");
+    console.error("Error generating blur placeholder:", error);
+    throw new Error("Failed to generate blur placeholder");
   }
 }

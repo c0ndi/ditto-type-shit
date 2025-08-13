@@ -135,9 +135,9 @@ model Post {
     topic     Topic  @relation(fields: [topicId], references: [id], onDelete: Cascade)
 
     // Image data
-    imageUrl String
-    imageKey String // Supabase storage key
-    blurHash String? // BlurHash for image placeholder
+    imageUrl    String
+    imageKey    String // Supabase storage key
+    blurDataUrl String? // Base64 blur placeholder for Next.js Image component
 
     // AI Recognition (initial)
     aiDescription   String? // "Red car with yellow fruit"
@@ -199,6 +199,8 @@ model Comment {
 
     @@map("comments")
 }
+
+//TODO: Investigate a better way to track post views i think the current way is not efficient
 
 // View tracking for analytics
 model PostView {
