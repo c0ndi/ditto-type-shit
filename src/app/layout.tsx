@@ -30,9 +30,7 @@ export default function RootLayout({
         <SessionProvider>
           <TRPCReactProvider>
             <TopNavigation />
-            <main className="min-h-screen bg-gradient-to-br from-background via-background to-background/80">
-              {children}
-            </main>
+            {children}
           </TRPCReactProvider>
         </SessionProvider>
       </body>
