@@ -63,7 +63,7 @@ const ArcGalleryHero: React.FC<ArcGalleryHeroProps> = ({
   const step = (endAngle - startAngle) / (count - 1);
 
   return (
-    <section className={cn("relative overflow-hidden", className)}>
+    <section className={cn("relative", className)}>
       <div
         className="relative mx-auto"
         style={{
