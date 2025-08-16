@@ -19,11 +19,13 @@ export function HeroWaitlist() {
   ].sort(() => Math.random() - 0.3).slice(0, 10);
   return (
     <div className="gap-4 relative w-full h-full py-12 md:py-32 px-4 md:px-12 flex">
-      <div className="text-2xl font-mono">
+      <div className="text-lg md:text-2xl font-mono">
         join the party
       </div>
-      <ThreeDGallery images={images} />
-      <div className="text-2xl font-mono mt-auto ml-auto">
+      <div className="scale-25 md:scale-100">
+        <ThreeDGallery images={images} />
+      </div>
+      <div className="text-lg md:text-2xl font-mono mt-auto ml-auto">
         show what matters
       </div>
     </div>
